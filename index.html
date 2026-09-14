@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YenPrivEscBins</title>
+    <meta name="description" content="YenPrivEscBins - Elite Unix Privilege Escalation Database">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="Linux.png">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-gradient" aria-hidden="true"></div>
+    <canvas id="particles-canvas" class="particles-canvas"></canvas>
+    <div class="bg-grid" aria-hidden="true"></div>
+
+    <!-- Linux Logo -->
+    <div class="linux-logo" aria-hidden="true">
+        <img src="Linux.png" alt="Linux">
+    </div>
+
+    <!-- Loading Skeleton -->
+    <div id="loadingSkeleton" class="loading-skeleton">
+        <div class="skeleton-header"></div>
+        <div class="skeleton-search"></div>
+        <div class="skeleton-grid">
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="main-content hidden">
+        <header>
+            <div class="header-top">
+                <h1><a href="/">YenPrivEscBins</a></h1>
+                <div class="header-actions">
+                    <button class="header-btn" id="randomBtn" title="Random Binary">
+                        <span>Random</span>
+                    </button>
+                    <button class="header-btn" id="themeBtn" title="Toggle Theme">
+                        <span class="theme-icon" id="themeIcon">Dark</span>
+                    </button>
+                </div>
+            </div>
+            <p>YenPrivEscBins is a curated list of Unix binaries that can be used to escalate privileges or bypass local security restrictions.</p>
+        </header>
+
+        <main>
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search binaries... (Ctrl+K)" autocomplete="off">
+                <button class="search-clear" id="searchClear" title="Clear">X</button>
+                <div class="search-hints" id="searchHints"></div>
+            </div>
+
+            <!-- Functions Filter -->
+            <div class="filters" id="functionFilters">
+                <span class="filter-label">Functions:</span>
+                <button class="filter-btn active" data-filter="all" data-type="function">
+                    <span class="filter-icon" data-icon="all">*</span>
+                    All
+                </button>
+                <button class="filter-btn" data-filter="shell" data-type="function">
+                    <span class="filter-icon" data-icon="shell">$</span>
+                    Shell
+                </button>
+                <button class="filter-btn" data-filter="command" data-type="function">
+                    <span class="filter-icon" data-icon="command">></span>
+                    Command
+                </button>
+                <button class="filter-btn" data-filter="reverse-shell" data-type="function">
+                    <span class="filter-icon" data-icon="reverse-shell">&lt;</span>
+                    Reverse Shell
+                </button>
+                <button class="filter-btn" data-filter="bind-shell" data-type="function">
+                    <span class="filter-icon" data-icon="bind-shell">=</span>
+                    Bind Shell
+                </button>
+                <button class="filter-btn" data-filter="file-read" data-type="function">
+                    <span class="filter-icon" data-icon="file-read">R</span>
+                    File Read
+                </button>
+                <button class="filter-btn" data-filter="file-write" data-type="function">
+                    <span class="filter-icon" data-icon="file-write">W</span>
+                    File Write
+                </button>
+                <button class="filter-btn" data-filter="file-upload" data-type="function">
+                    <span class="filter-icon" data-icon="file-upload">U</span>
+                    File Upload
+                </button>
+                <button class="filter-btn" data-filter="file-download" data-type="function">
+                    <span class="filter-icon" data-icon="file-download">D</span>
+                    File Download
+                </button>
+                <button class="filter-btn" data-filter="library-load" data-type="function">
+                    <span class="filter-icon" data-icon="library-load">L</span>
+                    Library Load
+                </button>
+            </div>
+
+            <!-- Contexts Filter -->
+            <div class="filters" id="contextFilters">
+                <span class="filter-label">Contexts:</span>
+                <button class="filter-btn active" data-filter="all" data-type="context">
+                    <span class="filter-icon" data-icon="all">*</span>
+                    All
+                </button>
+                <button class="filter-btn" data-filter="unprivileged" data-type="context">
+                    <span class="filter-dot" style="background: #10b981;"></span>
+                    Unprivileged
+                </button>
+                <button class="filter-btn" data-filter="sudo" data-type="context">
+                    <span class="filter-dot" style="background: #f59e0b;"></span>
+                    Sudo
+                </button>
+                <button class="filter-btn" data-filter="suid" data-type="context">
+                    <span class="filter-dot" style="background: #ef4444;"></span>
+                    SUID
+                </button>
+                <button class="filter-btn" data-filter="limited-suid" data-type="context">
+                    <span class="filter-dot" style="background: #ec4899;"></span>
+                    Limited SUID
+                </button>
+                <button class="filter-btn" data-filter="capabilities" data-type="context">
+                    <span class="filter-dot" style="background: #8b5cf6;"></span>
+                    Capabilities
+                </button>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="filters">
+                <span class="filter-label">Sort:</span>
+                <button class="filter-btn active" data-sort="alpha-asc">A-Z</button>
+                <button class="filter-btn" data-sort="alpha-desc">Z-A</button>
+                <button class="filter-btn" data-sort="functions-desc">Most Functions</button>
+                <button class="filter-btn" data-sort="functions-asc">Least Functions</button>
+                <button class="filter-btn" data-sort="commands-desc">Most Commands</button>
+            </div>
+
+            <!-- Favorites Filter -->
+            <div class="filters">
+                <span class="filter-label">Favorites:</span>
+                <button class="filter-btn" id="favoritesFilter">
+                    <span class="filter-icon">*</span>
+                    Show Only Favorites
+                    <span class="filter-count" id="favCount">0</span>
+                </button>
+                <button class="filter-btn" id="clearFavoritesBtn" title="Remove all favorites">
+                    <span class="filter-icon">X</span>
+                    Clear All Favorites
+                </button>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-value" id="statTotal">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="statResults">0</span>
+                    <span class="stat-label">Results</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item" id="favoritesStat" style="cursor: pointer;" title="Click to filter favorites">
+                    <span class="stat-value" id="statFavorites">0</span>
+                    <span class="stat-label">Favorites</span>
+                </div>
+            </div>
+
+            <!-- Active Filters -->
+            <div class="active-filters" id="activeFilters"></div>
+
+            <!-- Binaries List -->
+            <div id="binariesList" class="binaries-list"></div>
+
+            <!-- No Results -->
+            <div class="no-results hidden" id="noResults">
+                <div class="no-results-icon">?</div>
+                <h3>No Binaries Found</h3>
+                <p>Try adjusting your search or filters</p>
+                <button class="no-results-btn" id="resetAllBtn">Reset All</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>YenPrivEscBins</p>
+        </footer>
+    </div>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" title="Back to top">^</button>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Binary</h2>
+                <div class="modal-actions">
+                    <button class="modal-action" id="favBtn" title="Add to favorites">Favorite</button>
+                    <button class="modal-action" id="shareBtn" title="Copy link">Share</button>
+                    <button class="modal-close" id="modalClose">X</button>
+                </div>
+            </div>
+            <div class="modal-meta" id="modalMeta"></div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Command Palette -->
+    <div class="command-palette hidden" id="commandPalette">
+        <div class="palette-overlay" id="paletteOverlay"></div>
+        <div class="palette-content">
+            <div class="palette-header">
+                <input type="text" id="paletteInput" placeholder="Search commands..." autocomplete="off">
+                <kbd class="palette-kbd">ESC</kbd>
+            </div>
+            <div class="palette-results" id="paletteResults"></div>
+        </div>
+    </div>
+
+    <!-- Data first, then logic -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
