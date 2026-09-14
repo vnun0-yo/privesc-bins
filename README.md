@@ -20,7 +20,7 @@ cd privesc-bins
 # open a python server 
 
 ```bash
-python3 -m http.server 8080
+sudo python3 -m http.server 8080
 ```
 
 # open the browser and write
