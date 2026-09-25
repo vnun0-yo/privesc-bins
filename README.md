@@ -1,5 +1,5 @@
 This site specializes in Linux privilege escalation using binaries; it features 390 binaries that you can exploit.
-# The Website By - Yen's
+# The Website By - Yen
 
 
 ## Installation
@@ -30,4 +30,4 @@ http://localhost:8080
 ```
 ## Type the link in the top bar, not the bottom one
 
-## The Website By - Yen's
+## The Website By - Yen
